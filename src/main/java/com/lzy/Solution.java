@@ -1,8 +1,7 @@
 package com.lzy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.sql.ClientInfoStatus;
+import java.util.*;
 
 class Solution {
     //  kmp next数组
@@ -83,39 +82,148 @@ class Solution {
 
     }
             return list;
-
-
     }
 
     // 94.二叉树的中序遍历
     public List<Integer> inorderTraversal(TreeNode root) {
-        List<Integer> list = new ArrayList<>();
+        ArrayList<Integer> list = new ArrayList<>();
         if (root == null) {
             return list;
         }
         Stack<TreeNode> stack = new Stack<>();
 
         while (root != null || !stack.isEmpty()) {
-            while (root.left != null) {
+            if (root != null) {
                 stack.push(root);
                 root = root.left;
+            }else{
+                root = stack.pop();
+                list.add(root.val);
+                root =root.right;
             }
-            stack.push(root);
-            TreeNode node = stack.pop();
-            list.add(node.val);
-            if (node.right != null) {
-                node = node.right;
-                stack.push(node.right);
-            }
-
         }
         return list;
+    }
 
+    public List<Integer> postorderTraversal(TreeNode root) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (root == null) {
+            return list;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            root = stack.pop();
+            list.add(root.val);
+            if (root.left != null) {
+                stack.push(root.left);
+            }
+            if (root.right != null) {
+                stack.push(root.right);
+            }
+        }
+        Collections.reverse(list);
+        return list;
     }
 
 
 
+    // 102.二叉树的层序遍历
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        levelOrderFunc2(root,0);
+        return listListresult;
+    }
 
+    public List<List<Integer>> levelOrderFunc1(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                root = queue.peek();
+                list.add(queue.poll().val);
+                if (root.left != null) {
+                    queue.offer(root.left);
+                }
+                if (root.right != null) {
+                    queue.offer(root.right);
+                }
+            }
+            result.add(list);
+
+        }
+//        List<Float> result2 =new ArrayList<>();
+//        for (List<Integer> list : result) {
+//            float temp = 0;
+//            for (int i = 0; i < list.size(); i++) {
+//                temp += list.get(i);
+//            }
+//            float avg = temp/list.size();
+//            result2.add(avg);
+//
+//        }
+        return result;
+    }
+
+    public List<List<Integer>> listListresult = new ArrayList<>();
+    public void levelOrderFunc2(TreeNode root, int deep) {
+        if (root == null) {
+            return;
+        }
+        if (listListresult.size() <= deep) {
+            listListresult.add(new ArrayList<>());
+        }
+        listListresult.get(deep).add(root.val);
+
+        levelOrderFunc2(root.left, deep + 1);
+        levelOrderFunc2(root.right, deep + 1);
+    }
+
+    // BFS
+
+    /**
+     *
+     * @param root 输入值举例root = [3,9,20,null,null,15,7]，为TreeNode类型
+     * @return  返回的是一个二维数组，包含每层的元素
+     */
+    public List<List<Integer>> BFS(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (root != null) {
+            int size = queue.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                root = queue.poll();
+                list.add(root.val);
+                if (root.left != null) {
+                    queue.offer(root.left);
+                }
+                if (root.right != null) {
+                    queue.offer(root.right);
+                }
+            }
+            result.add(list);
+        }
+        return result;
+    }
+
+    public void DFS(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        // 一系列操作
+        DFS(root.left);
+        DFS(root.right);
+    }
 
 
 
